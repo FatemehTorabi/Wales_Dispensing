@@ -1,0 +1,105 @@
+--
+output:
+  pdf_document: null
+  word_document:
+    fig_caption: yes
+    fig_height: 2.5
+    fig_width: 3
+    toc: yes
+    toc_depth: 2
+---
+
+```{r packages&libraries,message=FALSE, comment=NA,echo=FALSE}
+#by : FTORABI
+#date Oct 2017
+## if source file hasn't been recognized check the folder directory
+#pop up a login box (may be behind current window)
+
+##Packages: 
+#if you get an error with the name of any packages: download the packages outside the markdown document.
+#install.packages ("RODBC");
+#install.packages("Cairo");
+#install.packages ("lattice");
+#install.packages ("sqldf");
+#install.packages ("getopt");
+
+
+library(RODBC);
+library(Cairo);
+library(lattice);
+library(getopt);
+library(dplyr)
+library(psych)
+library(rmarkdown)
+library(readr)
+
+#Include the file login_box.r in your project. You may have to include the full
+#path to the file depending on how R is configured.
+#obtain the longin_box file either via wiki or ask any member of the team
+
+source("S:/0911 - Utilising routine data and machine learning techniques to discover new multi/RRDA_WDDS/login_box.r");
+
+#Get the login info, using 'yourUsername' as username.
+
+login = getLogin();
+
+#Connect and get the database
+sql = odbcConnect('PR_SAIL',login[1],login[2]);
+login = 0 # this will make your password anonymous
+
+project_dir <- function(...) {
+    str_c("S:/0911 - Utilising routine data and machine learning techniques to discover new multi/RRDA_WDDS/", ...)
+}
+
+```
+
+```{r import , message=FALSE, comment=NA,echo=FALSE}
+#Read from tables into R
+#bnf source csv: pull down into project_dir as stated above:
+
+#BNF.AUG<-read.csv("S:/0911 - Utilising routine data and machine learning techniques to discover new multi/RRDA_WDDS/BNF mapping/BNFSnomedMapping20200818.csv")
+
+#BNF.OCT<-read.csv("S:/0911 - Utilising routine data and machine learning techniques to discover new multi/RRDA_WDDS/BNF mapping/BNFSnomedMapping20201021.csv")
+
+#BNF.NOV<-read.csv("S:/0911 - Utilising routine data and machine learning techniques to discover new multi/RRDA_WDDS/BNF mapping/BNFSnomedMapping20201116.csv")
+
+#BNF.DEC<-read.csv("S:/0911 - Utilising routine data and machine learning techniques to discover new multi/RRDA_WDDS/BNF mapping/BNFSnomedMapping20201216.csv")
+
+#BNF.JAN21<-read.csv("S:/0911 - Utilising routine data and machine learning techniques to discover new multi/RRDA_WDDS/BNF mapping/BNFSnomedMapping20210317.csv")
+
+#BNF.APR21<-read.csv("S:/0911 - Utilising routine data and machine learning techniques to discover new multi/RRDA_WDDS/BNF mapping/BNFSnomedMapping20210428.csv")
+
+#BNF.MAY21<-read.csv("S:/0911 - Utilising routine data and machine learning techniques to discover new multi/RRDA_WDDS/BNF mapping/BNFSnomedMapping20210519.csv")
+
+#BNF.AUG21 <- read_excel("P:/torabif/workspace/RRDA_WDDS/BNF mapping/BNFSnomedMapping20210819.xlsx")
+
+
+#go to the : 
+#if there is any updated version of the mapping extract then download and use the following snippets to write them into schema: #http://nhsbsa.nhs.uk/prescription-data/undrestanding-our-data/bnf-snomed-mapping
+
+#use this template to import the data: 
+#BNF.JUN21<-read.csv("S:/0911 - Utilising routine data and machine learning techniques to discover new multi/RRDA_WDDS/BNF mapping/BNFSnomedMapping20210621.csv")
+
+#july version was uploaded by DBAs for me
+
+library(readxl)
+
+#BNF.SEP21 <- read_excel("P:/torabif/workspace/RRDA_WDDS/BNF mapping/BNFSnomedMapping20210916.xlsx")
+#BNF.OCT21 <- read_excel("P:/torabif/workspace/RRDA_WDDS/BNF mapping/BNFSnomedMapping20211018.xlsx")
+#BNF.NOV21 <- read_excel("P:/torabif/workspace/RRDA_WDDS/BNF mapping/BNFSnomedMapping20211112.xlsx")
+#BNF.DEC21 <-read_excel("P:/torabif/workspace/RRDA_WDDS/BNF mapping/BNFSnomedMapping20211214.xlsx")
+BNF.Jan22 <-read_excel("P:/torabif/workspace/RRDA_WDDS/BNF mapping/BNFSnomedMapping20220321.xlsx")
+  
+#sqlSave(sql, BNF.AUG   ,  "SAILW0911V.SAILW0911V.RRDA_WDDS_REF_BNF_SNOMED_202008"  ,rownames=TRUE)
+#sqlSave(sql, BNF.OCT   ,  "SAILW0911V.RRDA_WDDS_REF_BNF_SNOMED_202010" ,rownames=TRUE)
+#sqlSave(sql, BNF.NOV   ,  "SAILW0911V.RRDA_WDDS_REF_BNF_SNOMED_202011" ,rownames=TRUE)
+#sqlSave(sql, BNF.DEC   ,  "SAILW0911V.RRDA_WDDS_REF_BNF_SNOMED_202012" ,rownames=TRUE)
+#sqlSave(sql, BNF.JAN21 ,  "SAILW0911V.RRDA_WDDS_REF_BNF_SNOMED_202101" ,rownames=TRUE)
+#sqlSave(sql, BNF.JUN21 ,  "SAILW0911V.RRDA_WDDS_REF_BNF_SNOMED_202106" ,rownames=TRUE)
+#sqlSave(sql, BNF.AUG21 ,  "SAILW0911V.RRDA_WDDS_REF_BNF_SNOMED_202108" ,rownames=TRUE)
+#sqlSave(sql, BNF.SEP21 ,  "SAILW0911V.RRDA_WDDS_REF_BNF_SNOMED_202109" ,rownames=TRUE)
+#sqlSave(sql, BNF.OCT21 ,  "SAILW0911V.RRDA_WDDS_REF_BNF_SNOMED_202110" ,rownames=TRUE)
+#sqlSave(sql, BNF.NOV21 ,  "SAILW0911V.RRDA_WDDS_REF_BNF_SNOMED_202111" ,rownames=TRUE)
+
+sqlSave(sql, BNF.DEC21 ,  "SAILW0911V.RRDA_WDDS_REF_BNF_SNOMED_202112" ,rownames=TRUE)
+```
